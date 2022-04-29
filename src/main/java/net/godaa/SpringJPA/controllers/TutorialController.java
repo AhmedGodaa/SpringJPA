@@ -3,6 +3,7 @@ package net.godaa.SpringJPA.controllers;
 import net.godaa.SpringJPA.models.Tutorial;
 import net.godaa.SpringJPA.Repos.TutorialRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8081")
-@RestController("/api")
+//@CrossOrigin(origins = "http://localhost:8081")
+@RestController
+@RequestMapping("/api")
 public class TutorialController {
     @Autowired
     TutorialRepo tutorialRepo;
@@ -38,12 +40,11 @@ public class TutorialController {
 
     @GetMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
-        Optional<Tutorial> tutorialData = tutorialRepo.findById(id);
-        if (tutorialData.isPresent()) {
-            return new ResponseEntity<>(tutorialData.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Tutorial tutorial = tutorialRepo.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Tutorial not found for this id :: " + id)
+        );
+        return new ResponseEntity<>(tutorial, HttpStatus.OK);
+
     }
 
     @PostMapping("/tutorials/save")
@@ -81,4 +82,12 @@ public class TutorialController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/tutorials")
+    public ResponseEntity<HttpStatus> deleteAllTutorials() {
+        tutorialRepo.deleteAll();
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

@@ -8,7 +8,10 @@ import java.util.List;
 @Repository
 public interface TutorialRepo extends JpaRepository<Tutorial, Long> {
 
-        List<Tutorial> findByPublished(boolean published);
-        List<Tutorial> findByTitle(String title);
+    List<Tutorial> findByPublished(boolean published);
+
+    List<Tutorial> findByTitle(String title);
+
+    List<Tutorial> findTutorialsByTagsId(Long tagId);
 
 }

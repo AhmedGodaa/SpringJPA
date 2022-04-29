@@ -22,7 +22,14 @@ public class Comment {
     // getters and setters
 
 
+    public Comment() {
+    }
 
+    public Comment(Long id, String content, Tutorial tutorial) {
+        this.id = id;
+        this.content = content;
+        this.tutorial = tutorial;
+    }
 
     public Long getId() {
         return id;
